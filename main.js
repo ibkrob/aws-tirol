@@ -66,12 +66,12 @@ async function loadData(url) {
             let popup = `
             <strong>${geoJsonPoint.properties.name}</strong>
             <br>
-            <strong>(${geoJsonPoint.geometry.coordinates[2]}Meter Ü. NN)</strong>
+            (${geoJsonPoint.geometry.coordinates[2]}Meter Ü. NN)
           
             `;
             return L.marker(latlng, {
                 icon: L.icon({
-                    iconUrl: "icons/wifi.png",
+                    iconUrl: `icons/wifi.png`,
                     iconAnchor: [16,37],
                     popupAnchor: [0,-37]
                 })
@@ -79,7 +79,7 @@ async function loadData(url) {
             }).bindPopup(popup);
         }
 
-    }).addTo(overlay.stations)
+    }).addTo(overlays.stations);
 
     // Wetterstationen mit Icons und Popups implementieren
 }
