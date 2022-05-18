@@ -61,25 +61,26 @@ async function loadData(url) {
     let geojson = await response.json();
 
     L.geoJSON(geojson, {
-        pointToLayer: function (geoJsonPoint,latlng) {
-            
+        pointToLayer: function (geoJsonPoint, latlng) {
+            //console.log(geoJsonPoint.properties.NAME);
             let popup = `
-            <strong>${geoJsonPoint.properties.name}</strong>
-            <br>
-            (${geoJsonPoint.geometry.coordinates[2]} Meter Ü. NN)
-          
+            <strong>${geoJsonPoint.properties.name}</strong><br> (${geoJsonPoint.geometry.coordinates[2]} m ü. NN)
+            
             `;
+
             return L.marker(latlng, {
                 icon: L.icon({
                     iconUrl: `icons/wifi.png`,
-                    iconAnchor: [16,37],
-                    popupAnchor: [0,-37]
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -37]
                 })
 
             }).bindPopup(popup);
         }
 
     }).addTo(overlays.stations);
+
+    
 
     // Wetterstationen mit Icons und Popups implementieren
 }
