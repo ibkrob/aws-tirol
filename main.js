@@ -55,31 +55,59 @@ L.control.fullscreen().addTo(map);
 // Wetterstationslayer beim Laden anzeigen
 overlays.stations.addTo(map);
 
+let drawWetterstation =function(geojson){
+
+    L.geoJSON(geojson, {
+    pointToLayer: function (geoJsonPoint,latlng) {
+        
+        let popup = `
+        <strong>${geoJsonPoint.properties.name}</strong>
+        <br>
+        (${geoJsonPoint.geometry.coordinates[2]} Meter Ü. NN)
+      
+        `;
+        return L.marker(latlng, {
+            icon: L.icon({
+                iconUrl: `icons/wifi.png`,
+                iconAnchor: [16,37],
+                popupAnchor: [0,-37]
+            })
+
+        }).bindPopup(popup);
+    }
+
+}).addTo(overlays.stations);}
+
+
+//Temperature
+let drawTemperature =function(geojson){
+
+    L.geoJSON(geojson, {
+    pointToLayer: function (geoJsonPoint,latlng) {
+        
+        let popup = `
+        <strong>${geoJsonPoint.properties.name}</strong>
+        <br>
+        (${geoJsonPoint.geometry.coordinates[2]} m)
+      
+        `;
+        return L.marker(latlng, {
+            icon: L.divIcon({
+                className:"aws-div-icon"   ,
+                html:`<span>${geoJsonPoint.properties.LT}</span>`
+            })
+
+        }).bindPopup(popup);
+    }
+
+}).addTo(overlays.temperature);}
+
+
 // Wetterstationen
 async function loadData(url) {
     let response = await fetch(url);
     let geojson = await response.json();
 
-    L.geoJSON(geojson, {
-        pointToLayer: function (geoJsonPoint,latlng) {
-            
-            let popup = `
-            <strong>${geoJsonPoint.properties.name}</strong>
-            <br>
-            (${geoJsonPoint.geometry.coordinates[2]} Meter Ü. NN)
-          
-            `;
-            return L.marker(latlng, {
-                icon: L.icon({
-                    iconUrl: `icons/wifi.png`,
-                    iconAnchor: [16,37],
-                    popupAnchor: [0,-37]
-                })
-
-            }).bindPopup(popup);
-        }
-
-    }).addTo(overlays.stations);
 
     // Wetterstationen mit Icons und Popups implementieren
 }
