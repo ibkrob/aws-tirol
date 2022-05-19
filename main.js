@@ -1,5 +1,6 @@
 /* Wetterstationen Tirol Beispiel */
 
+
 let innsbruck = {
     lat: 47.267222,
     lng: 11.392778,
@@ -52,12 +53,11 @@ L.control.scale({
 // Fullscreen control
 L.control.fullscreen().addTo(map);
 
-// diese Layer beim Laden anzeigen
-overlays.snowheight.addTo(map);
+// Layer beim Laden anzeigen
+overlays.wind.addTo(map);
 
-// Farben nach Wert und Schwellen ermitteln
+// Farben ( Wert und Schwellen) ermitteln
 let getColor = function(value, ramp) {
-    //console.log(value,ramp);
     for (let rule of ramp) {
         //console.log(rule)
         if (value >= rule.min && value < rule.max) {
@@ -65,7 +65,8 @@ let getColor = function(value, ramp) {
         }
     }
 };
-//console.log(getColor(-40, COLORS.temperature));
+
+
 
 // Wetterstationen mit Icons und Popups
 let drawStations = function(geojson) {
@@ -139,6 +140,36 @@ let drawSnowheight = function(geojson) {
     }).addTo(overlays.snowheight);
 }
 
+// Windgeschwindigkeit
+let drawWind = function(geojson) {
+    L.geoJSON(geojson, {
+        filter: function(geoJsonPoint) {
+            if (geoJsonPoint.properties.WG > 0 && geoJsonPoint.properties.WG < 300 && geoJsonPoint.properties.WR >= 0 && geoJsonPoint.properties.WR <=360) {
+                return true;
+            }
+        },
+        pointToLayer: function(geoJsonPoint, latlng) {
+            let popup = `
+                ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
+            `;
+            let color = getColor(
+                geoJsonPoint.properties.WG,
+                COLORS.wind
+            );
+
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    html: `<span style="background-color:${color};transform: rotate(${deg}deg)"><i class="fa-solid fa-circle-arrow-up"></i> ${geoJsonPoint.properties.WG.toFixed(0)}</span>`
+
+                    
+                })
+            }).bindPopup(popup);
+        }
+    }).addTo(overlays.wind);
+}
+
+
 // Wetterstationen
 async function loadData(url) {
     let response = await fetch(url);
@@ -146,6 +177,7 @@ async function loadData(url) {
 
     drawStations(geojson);
     drawTemperature(geojson);
-    drawSnowheight(geojson);
+    drawWind(geojson);
+
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
