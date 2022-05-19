@@ -1,56 +1,123 @@
-<!DOCTYPE html>
-<html lang="de">
+/* Wetterstationen Tirol Beispiel */
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Wetterstationen Tirol Beispiel</title>
+let innsbruck = {
+    lat: 47.267222,
+    lng: 11.392778,
+    zoom: 11
+};
 
-    <!-- Stationsicon als favicon -->
-    <link rel="shortcut icon" href="icons/wifi.png" type="image/png">
+// WMTS Hintergrundlayer von https://lawinen.report (CC BY avalanche.report) als Startlayer
+let startLayer = L.tileLayer("https://static.avalanche.report/tms/{z}/{x}/{y}.webp", {
+    attribution: '&copy; <a href="https://lawinen.report">CC BY avalanche.report</a>'
+})
 
-    <!-- Font awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+// Overlays Objekt für die thematischen Layer
+let overlays = {
+    stations: L.featureGroup(),
+    temperature: L.featureGroup(),
+    precipitation: L.featureGroup(),
+    snowheight: L.featureGroup(),
+    wind: L.featureGroup(),
+};
 
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
-    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
+// Karte initialisieren
+let map = L.map("map", {
+    center: [innsbruck.lat, innsbruck.lng],
+    zoom: innsbruck.zoom,
+    layers: [
+        startLayer
+    ],
+});
 
-    <!-- Leaflet providers plugin -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-providers/1.13.0/leaflet-providers.min.js" integrity="sha512-5EYsvqNbFZ8HX60keFbe56Wr0Mq5J1RrA0KdVcfGDhnjnzIRsDrT/S3cxdzpVN2NGxAB9omgqnlh4/06TvWCMw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+// Layer control mit WMTS Hintergründen und Overlays
+let layerControl = L.control.layers({
+    "Relief avalanche.report": startLayer,
+    "Esri World Imagery": L.tileLayer.provider("Esri.WorldImagery"),
+}, {
+    "Wetterstationen": overlays.stations,
+    "Temperatur": overlays.temperature,
+    "Niederschlag": overlays.precipitation,
+    "Schneehöhe": overlays.snowheight,
+    "Wind": overlays.wind
+}).addTo(map);
 
-    <!-- Leaflet fullscreen plugin -->
-    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
-    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
+// Layer control ausklappen
+layerControl.expand();
 
-    <!-- eigene Stile und Hauptskript -->
-    <link rel="stylesheet" href="main.css">
-    <script defer src="main.js"></script>
-</head>
+// Maßstab control
+L.control.scale({
+    imperial: false
+}).addTo(map);
 
-<body>
-    <main>
-        <header>
-            <div>
+// Fullscreen control
+L.control.fullscreen().addTo(map);
 
-                <h2><i class="fa-solid fa-cloud-sun-rain"></i> Wetterstationen Tirol Beispiel</h2>
-            </div>
-            <nav>
-                <i class="fab fa-github"></i> <a href="https://github.com/webmapping/aws-tirol">Github</a>
-            </nav>
-        </header>
-        <article>
-            <div id="map"></div>
-        </article>
-        <footer>
-            <strong>Datenquellen:</strong>
-            <nav>
-                <a href="https://lawinen.report/">Lawinen.report</a> |
-                <a href="https://www.data.gv.at/katalog/dataset/bb43170b-30fb-48aa-893f-51c60d27056f">Wetterstationsdaten Tirol</a>
-            </nav>
-        </footer>
-    </main>
-</body>
+// Wetterstationslayer beim Laden anzeigen
+overlays.stations.addTo(map);
 
-</html>
+// Stationen
+let drawStations=function(geojson){
+
+// Wetterstationen mit Icons und Popups implementieren
+    L.geoJSON(geojson, {
+    pointToLayer: function (geoJsonPoint,latlng) {
+        
+        let popup = `
+        <strong>${geoJsonPoint.properties.name}</strong>
+        <br>
+        (${geoJsonPoint.geometry.coordinates[2]} Meter Ü. NN)
+      
+        `;
+        return L.marker(latlng, {
+            icon: L.icon({
+                iconUrl: `icons/wifi.png`,
+                iconAnchor: [16,37],
+                popupAnchor: [0,-37]
+            })
+
+        }).bindPopup(popup);
+    }
+
+}).addTo(overlays.stations);
+
+}
+
+//Temperatur
+
+// Stationen
+let drawTemperature=function(geojson){
+
+    // Wetterstationen mit Icons und Popups implementieren
+        L.geoJSON(geojson, {
+        pointToLayer: function (geoJsonPoint,latlng) {
+            
+            let popup = `
+            <strong>${geoJsonPoint.properties.name}</strong>
+            <br>
+            (${geoJsonPoint.geometry.coordinates[2]} Meter Ü. NN)
+          
+            `;
+            return L.marker(latlng, {
+                icon: L.icon({
+                    iconUrl: `icons/wifi.png`,
+                    iconAnchor: [16,37],
+                    popupAnchor: [0,-37]
+                })
+    
+            }).bindPopup(popup);
+        }
+    
+    }).addTo(overlays.temperature);
+    
+    }
+    
+
+
+// Wetterstationen
+async function loadData(url) {
+    let response = await fetch(url);
+    let geojson = await response.json();
+
+
+}
+loadData("https://static.avalanche.report/weather_stations/stations.geojson");
