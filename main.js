@@ -63,12 +63,15 @@ let getColor = function(value, ramp) {
         if (value >= rule.min && value < rule.max) {
             return rule.color;
         }
+
     }
 };
 
 
 
-// Wetterstationen mit Icons und Popups
+
+
+// Wetterstationen Icons& Popups
 let drawStations = function(geojson) {
     L.geoJSON(geojson, {
         pointToLayer: function(geoJsonPoint, latlng) {
@@ -86,7 +89,7 @@ let drawStations = function(geojson) {
     }).addTo(overlays.stations);
 }
 
-// Temperatur
+//  Temperatur
 let drawTemperature = function(geojson) {
     L.geoJSON(geojson, {
         filter: function(geoJsonPoint) {
@@ -113,7 +116,7 @@ let drawTemperature = function(geojson) {
     }).addTo(overlays.temperature);
 }
 
-// Schneehöhen
+// Schneehöhe
 let drawSnowheight = function(geojson) {
     L.geoJSON(geojson, {
         filter: function(geoJsonPoint) {
@@ -156,6 +159,7 @@ let drawWind = function(geojson) {
                 geoJsonPoint.properties.WG,
                 COLORS.wind
             );
+            let deg= geoJsonPoint.properties.WR
 
             return L.marker(latlng, {
                 icon: L.divIcon({
@@ -177,6 +181,7 @@ async function loadData(url) {
 
     drawStations(geojson);
     drawTemperature(geojson);
+    drawSnowheight(geojson)
     drawWind(geojson);
 
 }
