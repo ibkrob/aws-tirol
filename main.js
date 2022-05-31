@@ -99,6 +99,7 @@ let drawStations = function(geojson) {
                 <br> 
                 Windrichtung: ${geoJsonPoint.properties.WR}°
                 <br>
+                <a href="https://wiski.tirol.gv.at/lawine/grafiken/1100/standard/dreitage/${geoJsonPoint.properties.plot}.png">Wetterverlaufsgrafik (3 Tage) </a>
             `;
             return L.marker(latlng, {
                 icon: L.icon({
