@@ -53,8 +53,8 @@ L.control.scale({
 // Fullscreen control
 L.control.fullscreen().addTo(map);
 
-// Layer beim Laden anzeigen
-overlays.wind.addTo(map);
+// Stations beim Laden anzeigen
+overlays.stations.addTo(map);
 
 // Farben ermitteln
 let getColor = function(value, ramp) {
@@ -82,7 +82,7 @@ L.control.rainviewer({
 
 
 
-// Wetterstationen Icons& Popups
+// Wetterstationen mit Icons & Popups
 let drawStations = function(geojson) {
     L.geoJSON(geojson, {
         pointToLayer: function(geoJsonPoint, latlng) {
@@ -95,7 +95,7 @@ let drawStations = function(geojson) {
                 <br>
                 Windgeschw.: ${(geoJsonPoint.properties.WG * 3600) / 1000} km/h 
                 <br>
-                Relative Luftfeuchtigkeit: ${geoJsonPoint.properties.RH} %
+                Rel. Luftfeuchtigkeit: ${geoJsonPoint.properties.RH} %
                 <br> 
                 Windrichtung: ${geoJsonPoint.properties.WR}°
                 <br>
@@ -158,7 +158,7 @@ let drawHumidity = function(geojson) {
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
-                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.LT.toFixed(1)}</span>`
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.RH.toFixed(1)}</span>`
                 })
             }).bindPopup(popup);
         }
