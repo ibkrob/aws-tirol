@@ -56,7 +56,7 @@ L.control.fullscreen().addTo(map);
 // Layer beim Laden anzeigen
 overlays.wind.addTo(map);
 
-// Farben ( Wert und Schwellen) ermitteln
+// Farben ermitteln
 let getColor = function(value, ramp) {
     for (let rule of ramp) {
         //console.log(rule)
@@ -87,7 +87,18 @@ let drawStations = function(geojson) {
     L.geoJSON(geojson, {
         pointToLayer: function(geoJsonPoint, latlng) {
             let popup = `
-                ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
+                ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m ü. NN.)
+                <br>
+                Temp.: ${geoJsonPoint.properties.LT} °C
+                <br>
+                Schneehöhe: ${geoJsonPoint.properties.HS} cm
+                <br>
+                Windgeschw.: ${(geoJsonPoint.properties.WG * 3600) / 1000} km/h 
+                <br>
+                Relative Luftfeuchtigkeit: ${geoJsonPoint.properties.RH} %
+                <br> 
+                Windrichtung: ${geoJsonPoint.properties.WR}°
+                <br>
             `;
             return L.marker(latlng, {
                 icon: L.icon({
@@ -221,6 +232,6 @@ async function loadData(url) {
     drawTemperature(geojson);
     drawSnowheight(geojson)
     drawWind(geojson);
-
+    drawHumidity(geojson)
 }
 loadData("https://static.avalanche.report/weather_stations/stations.geojson");
