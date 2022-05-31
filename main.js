@@ -57,7 +57,7 @@ L.control.fullscreen().addTo(map);
 overlays.stations.addTo(map);
 
 // Farben ermitteln
-let getColor = function(value, ramp) {
+let getColor = function (value, ramp) {
     for (let rule of ramp) {
         //console.log(rule)
         if (value >= rule.min && value < rule.max) {
@@ -83,9 +83,9 @@ L.control.rainviewer({
 
 
 // Wetterstationen mit Icons & Popups
-let drawStations = function(geojson) {
+let drawStations = function (geojson) {
     L.geoJSON(geojson, {
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m ü. NN.)
                 <br>
@@ -113,14 +113,14 @@ let drawStations = function(geojson) {
 }
 
 //  Temperatur
-let drawTemperature = function(geojson) {
+let drawTemperature = function (geojson) {
     L.geoJSON(geojson, {
-        filter: function(geoJsonPoint) {
+        filter: function (geoJsonPoint) {
             if (geoJsonPoint.properties.LT > -50 && geoJsonPoint.properties.LT < 50) {
                 return true;
             }
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
             `;
@@ -140,14 +140,14 @@ let drawTemperature = function(geojson) {
 }
 
 //  Luftfeuchte (rel.)
-let drawHumidity = function(geojson) {
+let drawHumidity = function (geojson) {
     L.geoJSON(geojson, {
-        filter: function(geoJsonPoint) {
+        filter: function (geoJsonPoint) {
             if (geoJsonPoint.properties.RH > 0 && geoJsonPoint.properties.RH < 100) {
                 return true;
             }
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
             `;
@@ -167,14 +167,14 @@ let drawHumidity = function(geojson) {
 }
 
 // Schneehöhe
-let drawSnowheight = function(geojson) {
+let drawSnowheight = function (geojson) {
     L.geoJSON(geojson, {
-        filter: function(geoJsonPoint) {
+        filter: function (geoJsonPoint) {
             if (geoJsonPoint.properties.HS > 0 && geoJsonPoint.properties.HS < 15000) {
                 return true;
             }
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
             `;
@@ -194,14 +194,14 @@ let drawSnowheight = function(geojson) {
 }
 
 // Windgeschwindigkeit
-let drawWind = function(geojson) {
+let drawWind = function (geojson) {
     L.geoJSON(geojson, {
-        filter: function(geoJsonPoint) {
-            if ((geoJsonPoint.properties.WG > 0 && geoJsonPoint.properties.WG / 1000*3600 ) < 300 && geoJsonPoint.properties.WR >= 0 && geoJsonPoint.properties.WR <=360) {
+        filter: function (geoJsonPoint) {
+            if ((geoJsonPoint.properties.WG > 0 && geoJsonPoint.properties.WG / 1000 * 3600) < 300 && geoJsonPoint.properties.WR >= 0 && geoJsonPoint.properties.WR <= 360) {
                 return true;
             }
         },
-        pointToLayer: function(geoJsonPoint, latlng) {
+        pointToLayer: function (geoJsonPoint, latlng) {
             let popup = `
                 ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
             `;
@@ -209,14 +209,14 @@ let drawWind = function(geojson) {
                 geoJsonPoint.properties.WG,
                 COLORS.wind
             );
-            let deg= geoJsonPoint.properties.WR
+            let deg = geoJsonPoint.properties.WR
 
             return L.marker(latlng, {
                 icon: L.divIcon({
                     className: "aws-div-icon",
                     html: `<span style="background-color:${color};transform: rotate(${deg}deg)"><i class="fa-solid fa-circle-arrow-up"></i> ${geoJsonPoint.properties.WG.toFixed(0)}</span>`
 
-                    
+
                 })
             }).bindPopup(popup);
         }
