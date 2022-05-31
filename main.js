@@ -16,7 +16,7 @@ let startLayer = L.tileLayer("https://static.avalanche.report/tms/{z}/{x}/{y}.we
 let overlays = {
     stations: L.featureGroup(),
     temperature: L.featureGroup(),
-    precipitation: L.featureGroup(),
+    humidity: L.featureGroup(),
     snowheight: L.featureGroup(),
     wind: L.featureGroup(),
 };
@@ -37,7 +37,7 @@ let layerControl = L.control.layers({
 }, {
     "Wetterstationen": overlays.stations,
     "Temperatur": overlays.temperature,
-    "Niederschlag": overlays.precipitation,
+    "rel. Luftfeuchte": overlays.humidity,
     "Schneehöhe": overlays.snowheight,
     "Wind": overlays.wind
 }).addTo(map);
@@ -125,6 +125,33 @@ let drawTemperature = function(geojson) {
             }).bindPopup(popup);
         }
     }).addTo(overlays.temperature);
+}
+
+//  Luftfeuchte (rel.)
+let drawHumidity = function(geojson) {
+    L.geoJSON(geojson, {
+        filter: function(geoJsonPoint) {
+            if (geoJsonPoint.properties.RH > 0 && geoJsonPoint.properties.RH < 100) {
+                return true;
+            }
+        },
+        pointToLayer: function(geoJsonPoint, latlng) {
+            let popup = `
+                ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
+            `;
+            let color = getColor(
+                geoJsonPoint.properties.LT,
+                COLORS.temperature
+            );
+
+            return L.marker(latlng, {
+                icon: L.divIcon({
+                    className: "aws-div-icon",
+                    html: `<span style="background-color:${color}">${geoJsonPoint.properties.LT.toFixed(1)}</span>`
+                })
+            }).bindPopup(popup);
+        }
+    }).addTo(overlays.humidity);
 }
 
 // Schneehöhe
