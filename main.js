@@ -151,8 +151,8 @@ let drawHumidity = function(geojson) {
                 ${geoJsonPoint.properties.name} (${geoJsonPoint.geometry.coordinates[2]}m)
             `;
             let color = getColor(
-                geoJsonPoint.properties.LT,
-                COLORS.temperature
+                geoJsonPoint.properties.RH,
+                COLORS.humidity
             );
 
             return L.marker(latlng, {
