@@ -98,31 +98,31 @@ const COLORS = {
     }, {
         min: 30,
         max: 40,
-        color: rgb(221, 221, 221)
+        color: "#DDDDDD"
     }, {
         min: 40,
         max: 50,
-        color: rgb(198, 201, 206)
+        color: "#C6C9C6"
     }, {
         min: 50,
         max: 60,
-        color: rgb(187, 187, 187)
+        color: "#BBBBBB"
     }, {
         min: 60,
         max: 70,
-        color: rgb(170, 170, 204)
+        color: "#AAAACC"
     }, {
         min: 70,
         max: 80,
-        color: rgb(153, 152, 221)
+        color: "#9998DD"
     }, {
         min: 80,
         max: 90,
-        color: rgb(135, 136, 238)
+        color: "#8788EE"
     }, {
         min: 90,
         max: 400,
-        color: rgb(118, 119, 225)
+        color: "#8788EE"
     }
 ],
 
