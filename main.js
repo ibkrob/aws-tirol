@@ -93,7 +93,7 @@ let drawStations = function(geojson) {
                 <br>
                 Schneehöhe: ${geoJsonPoint.properties.HS} cm
                 <br>
-                Windgeschw.: ${(geoJsonPoint.properties.WG * 3600) / 1000} km/h 
+                Windgeschw.: ${(geoJsonPoint.properties.WG / 1000 * 3600) } km/h 
                 <br>
                 Rel. Luftfeuchtigkeit: ${geoJsonPoint.properties.RH} %
                 <br> 
@@ -196,7 +196,7 @@ let drawSnowheight = function(geojson) {
 let drawWind = function(geojson) {
     L.geoJSON(geojson, {
         filter: function(geoJsonPoint) {
-            if (geoJsonPoint.properties.WG > 0 && geoJsonPoint.properties.WG < 300 && geoJsonPoint.properties.WR >= 0 && geoJsonPoint.properties.WR <=360) {
+            if ((geoJsonPoint.properties.WG > 0 && geoJsonPoint.properties.WG / 1000*3600 ) < 300 && geoJsonPoint.properties.WR >= 0 && geoJsonPoint.properties.WR <=360) {
                 return true;
             }
         },
